@@ -71,6 +71,7 @@ class GrudgePlayer(Player):
         else:
             return True
 
+
 class DetectivePlayer(Player):
     def __init__(self, payoff):
         super().__init__(payoff)
@@ -91,6 +92,13 @@ class DetectivePlayer(Player):
         else:
             return False
 
+class RandomPlayer(Player):
+    def __str__(self):
+        return "Random Player"
+
+    def make_move(self):
+        """Make a move for a random player"""
+        return np.random.choice([True, False])
 
 class Game:
     def __init__(self, player1, player2, payoff, num_turns=10):
@@ -128,7 +136,7 @@ def main():
     pretty_history = pd.DataFrame([history[0]['own'], history[1]['own']],
                                   index=[str(game.player1), str(game.player2)],
                                   columns=np.arange(1, 11)).T
-    print("Result of the game:\n\tPlayer 1 ({}): {}\n\tPlayer 2 ({}): {}".format(
+    print("Result of the game:\n\tPlayer 1 ({}): {}\n\tPlayer 2 ({}): {}\n\nNote that values show score for the row player".format(
         game.player1, result[0], game.player2, result[1])
     )
     print("History of the game:\n{}".format(pretty_history))
