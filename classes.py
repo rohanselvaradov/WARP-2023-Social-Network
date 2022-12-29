@@ -3,7 +3,6 @@ import numpy as np
 
 PAYOFF = pd.DataFrame(np.array([[5, -10], [10, -5]]), columns=[True, False], index=[True, False]) # True = good, False = bad
 
-
 class Player:
     def __init__(self, payoff):
         """Initialize a player:
