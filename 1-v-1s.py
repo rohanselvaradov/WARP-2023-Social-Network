@@ -15,3 +15,5 @@ def all_pairs():
         outcomes.loc[str(game.player2), str(game.player1)] = result[1]
 
     print(outcomes.to_string())
+
+all_pairs()
