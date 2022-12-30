@@ -4,14 +4,18 @@ import numpy as np
 PAYOFF = pd.DataFrame(np.array([[5, -10], [10, -5]]), columns=[True, False], index=[True, False]) # True = good, False = bad
 
 class Player:
-    def __init__(self, payoff):
-        """Initialize a player:
-         name: int (0 means row, 1 means column)
-
-         """
+    def __init__(self, payoff, friends=None):
+        """Initialize a player"""
         self.score = 0
         self.history = {'own': [], 'other': []}
         self.payoff = payoff
+        self.name = None
+        self.friends = friends
+
+    def __hash__(self):
+        if self.friends is not None:
+            return hash((self.name, tuple(self.friends)))
+        return hash(self.name)
 
     def update_score(self, own_move, other_move):
         """Update the score of the player"""
@@ -21,29 +25,41 @@ class Player:
 
 
 class GoodPlayer(Player):
+    def __init__(self, payoff, friends=None):
+        super().__init__(payoff, friends)
+        self.name = "Good Player"
+
     def __str__(self):
-        return "Good Player"
+        return self.name
 
     def make_move(self):
-        """Make a move for a good player"""
+        """Make a move for a Good player"""
         return True
 
 
 class BadPlayer(Player):
+    def __init__(self, payoff, friends=None):
+        super().__init__(payoff, friends)
+        self.name = "Bad Player"
+
     def __str__(self):
-        return "Bad Player"
+        return self.name
 
     def make_move(self):
-        """Make a move for a bad player"""
+        """Make a move for a Bad player"""
         return False
 
 
 class CopycatPlayer(Player):
+    def __init__(self, payoff, friends=None):
+        super().__init__(payoff, friends)
+        self.name = "Copycat Player"
+
     def __str__(self):
-        return "Copycat Player"
+        return self.name
 
     def make_move(self):
-        """Make a move for a copycat player"""
+        """Make a move for a Copycat player"""
         if len(self.history['own']) == 0:
             return True
         else:
@@ -51,15 +67,16 @@ class CopycatPlayer(Player):
 
 
 class GrudgePlayer(Player):
-    def __init__(self, payoff):
-        super().__init__(payoff)
+    def __init__(self, payoff, friends=None):
+        super().__init__(payoff, friends)
+        self.name = "Grudge Player"
         self.betrayed = False
 
     def __str__(self):
-        return "Grudge Player"
+        return self.name
 
     def make_move(self):
-        """Make a move for a grudge player"""
+        """Make a move for a Grudge player"""
         if len(self.history['own']) == 0:
             return True
         if self.betrayed:
@@ -72,16 +89,17 @@ class GrudgePlayer(Player):
 
 
 class DetectivePlayer(Player):
-    def __init__(self, payoff):
-        super().__init__(payoff)
+    def __init__(self, payoff, friends=None):
+        super().__init__(payoff, friends)
+        self.name = "Detective Player"
         self.opening = [True, False, True, True]
         self.betrayed = False
 
     def __str__(self):
-        return "Detective Player"
+        return self.name
 
     def make_move(self):
-        """Make a move for a detective player"""
+        """Make a move for a Detective player"""
         if len(self.history['own']) != 0 and self.history['other'][-1] == False:
             self.betrayed = True
         if len(self.history['own']) < 4:
@@ -92,11 +110,15 @@ class DetectivePlayer(Player):
             return False
 
 class RandomPlayer(Player):
+    def __init__(self, payoff, friends=None):
+        super().__init__(payoff, friends)
+        self.name = "Random Player"
+
     def __str__(self):
-        return "Random Player"
+        return self.name
 
     def make_move(self):
-        """Make a move for a random player"""
+        """Make a move for a Random player"""
         return np.random.choice([True, False])
 
 class Game:
